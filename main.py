@@ -3,12 +3,100 @@ import sys
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QWidget
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class MyWidget(QMainWindow):
+class EditorForm(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(903, 177)
+        self.tableWidget = QtWidgets.QTableWidget(Form)
+        self.tableWidget.setGeometry(QtCore.QRect(10, 10, 881, 121))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.tableWidget.setFont(font)
+        self.tableWidget.setRowCount(0)
+        self.tableWidget.setColumnCount(0)
+        self.tableWidget.setObjectName("tableWidget")
+        self.cancellation_button = QtWidgets.QPushButton(Form)
+        self.cancellation_button.setGeometry(QtCore.QRect(20, 140, 141, 31))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.cancellation_button.setFont(font)
+        self.cancellation_button.setObjectName("cancellation_button")
+        self.save_button = QtWidgets.QPushButton(Form)
+        self.save_button.setGeometry(QtCore.QRect(180, 140, 141, 31))
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.save_button.setFont(font)
+        self.save_button.setObjectName("save_button")
+        self.error_text = QtWidgets.QLabel(Form)
+        self.error_text.setGeometry(QtCore.QRect(350, 140, 531, 31))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.error_text.setFont(font)
+        self.error_text.setText("")
+        self.error_text.setObjectName("error_text")
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Редактор"))
+        self.cancellation_button.setText(_translate("Form", "Отмена"))
+        self.save_button.setText(_translate("Form", "Сохранить"))
+
+
+class MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(916, 601)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
+        self.tableWidget.setGeometry(QtCore.QRect(20, 40, 881, 511))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.tableWidget.setFont(font)
+        self.tableWidget.setRowCount(0)
+        self.tableWidget.setColumnCount(0)
+        self.tableWidget.setObjectName("tableWidget")
+        self.add_button = QtWidgets.QPushButton(self.centralwidget)
+        self.add_button.setGeometry(QtCore.QRect(30, 0, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.add_button.setFont(font)
+        self.add_button.setObjectName("add_button")
+        self.change_button = QtWidgets.QPushButton(self.centralwidget)
+        self.change_button.setGeometry(QtCore.QRect(170, 0, 121, 31))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.change_button.setFont(font)
+        self.change_button.setObjectName("change_button")
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 916, 21))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Эспрессо"))
+        self.add_button.setText(_translate("MainWindow", "добавить"))
+        self.change_button.setText(_translate("MainWindow", "изменить"))
+
+
+class MyWidget(QMainWindow, MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('main.ui', self)
+        self.setupUi(self)
         self.con = sqlite3.connect("coffee.db")
         self.add_button.clicked.connect(self.add_coffe)
         self.change_button.clicked.connect(self.change_coffe)
@@ -56,7 +144,7 @@ WHERE variety_names.id = Espresso.variety_name_id),
         self.ex.show()
 
 
-class EditorWindoe(QWidget):
+class EditorWindoe(QWidget, EditorForm):
     def __init__(self, *args):
         super().__init__()
         self.variety_name = args[0]
@@ -68,7 +156,7 @@ class EditorWindoe(QWidget):
         self.status = args[6]
         self.id = args[7]
 
-        uic.loadUi('addEditCoffeeForm.ui', self)
+        self.setupUi(self)
         self.con = sqlite3.connect("coffee.db")
         self.cancellation_button.clicked.connect(self.cancel_window)
         self.save_button.clicked.connect(self.create_new_coffe)
